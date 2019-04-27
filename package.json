@@ -8,5 +8,8 @@
     "gulp": "^4.0.1",
     "laravel-elixir": "^6.0.0-15",
     "laravel-elixir-webpack-official": "^1.0.10"
+  },
+  "dependencies": {
+    "gulp-watch": "^5.0.1"
   }
 }
