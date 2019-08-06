@@ -66,3 +66,7 @@ Route::get('/certification', function () {
 // Route::get('/partner/insider', function () {
 //     return view('community-partner-insider');
 // });
+
+Route::get('/docs', function () {
+    return redirect('127.0.0.1/docs/');
+});
