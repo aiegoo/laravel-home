@@ -1,0 +1,33 @@
+# first hoo to copy files to another folder
+
+`
+ #!/bin/sh
+
+  for FILE in `exec git diff-index --check --cached HEAD -- | grep 'locales/US/en'` ; do
+     echo "Publishing $FILE to content/en-US"
+     cp $FILE content/en-US || { echo "Failed to publish $FILE"; exit 1; }
+     git add "content/en-US/$FILE" || { echo "Failed to git add content/en-US/$FILE"; exit 1; }
+  done
+  exit
+`
+
+1
+
+My advice is to do this as a pre-commit step instead of a post-commit or a post-push on the server side.
+
+Having this as a pre-commit step will give you better control over what is actually going in every commit and will better adhere to the underlying philosophy that a git commit is a self contained unit of content modification rather than some arbitrary operation on files.
+
+Having this as part of the commit will also make it easier for you to recreate the state of your development tree (content) when you reset, checkout, etc etc.
+
+Note the particularly ugly grep to filter for the relevant files - you can improve on that by putting the git diff-index result in a bash array and globbing for your directory and file patterns.
+
+Also note that it will always copy the files when you try to commit. If you commit is aborted for any reason, it will attempt to copy the files again when you retry. You can of course add a check as to whether the file is present (and identical!) in the content/en-US directory to avoid copying it multiple times.
+
+----
+`
+#!/bin/sh
+unset GIT_INDEX_FILE
+export GIT_WORK_TREE=/example.com/
+export GIT_DIR=/home/whoever/development/web-project/.git/
+git checkout -f
+`
